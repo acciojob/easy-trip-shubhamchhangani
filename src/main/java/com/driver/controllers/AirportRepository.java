@@ -15,6 +15,7 @@ public class AirportRepository {
     public HashMap<Integer,Flight> flightHashMap = new HashMap<Integer, Flight>();
     public HashMap<Integer, Passenger> passengerHashMap = new HashMap<>();
     public HashMap<Integer,List<Integer>> ticketHashMap = new HashMap<>();
+    public HashMap<Integer,Integer> flightRevenueHashMap = new HashMap<>();
 
     public void addAirport(Airport airport){
         airportHashmap.put(airport.getAirportName(),airport);
@@ -67,6 +68,8 @@ public class AirportRepository {
             }
             passengers.add(passengerId);
             ticketHashMap.put(flightId,passengers);
+            int fare = calculateFlightFare(flightId);
+            flightRevenueHashMap.put(flightId,flightRevenueHashMap.get(flightId) + fare);
             return "SUCCESS";
         } else if(Objects.isNull(ticketHashMap.get(flightId))){
             ticketHashMap.put(flightId,new ArrayList<>());
@@ -76,6 +79,8 @@ public class AirportRepository {
             }
             passengers.add(passengerId);
             ticketHashMap.put(flightId,passengers);
+            int fare = calculateFlightFare(flightId);
+            //Integer put = flightRevenueHashMap.put(flightRevenueHashMap.getOrDefault(flightId, 3000) + fare);
             return "SUCCESS";
         }
         return "FAILURE";
@@ -111,7 +116,9 @@ public class AirportRepository {
 
     public int calculateFlightFare(int flightId){
         int noOfPeopleBooked = ticketHashMap.get(flightId).size();
-        return noOfPeopleBooked*50 + 3000;
+        int totalFare = (25 * noOfPeopleBooked * noOfPeopleBooked) + (2975 * noOfPeopleBooked);
+
+        return totalFare;
     }
 
     public String getAirportNameFromFlightId(int flightId){
